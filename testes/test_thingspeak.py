@@ -1,8 +1,12 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+
+import pytest
 
 import config
+import formatos
 import internet
 import thingspeak
+from apoio import leituras_de_um_dia
 
 FEED = {"created_at": "2026-11-15T15:10:00Z", "entry_id": 42, "field1": "7.8", "field2": "140",
         "field3": "2", "field4": "1.2", "field5": "100"}
@@ -96,3 +100,27 @@ def test_situacao_para_o_cartao():
     assert (cartao["texto"], cartao["mensagem"]) == ("Sem leitura", "Ainda não chegou nenhuma leitura desta caixa.")
     cartao = thingspeak.situacao_da_caixa(CAIXA_SEM_SENSOR, [], "Sem sensor ligado.", AGORA)
     assert (cartao["tem_sensor"], cartao["texto"], cartao["temperatura"]) == (False, "Sem sensor", "--")
+
+
+def test_resume_as_leituras():
+    resumo = thingspeak.resumir_leituras(leituras_de_um_dia())
+    assert (resumo["quantidade"], resumo["invalidas"]) == (6, 1)
+    assert (resumo["max_c"], resumo["min_c"]) == (7.8, 3.0)
+    assert (resumo["acumulado_final"], resumo["estado_final"]) == (250, 3)
+    assert formatos.formatar_hora(resumo["aviso_de_gelo"]) == "12h00"
+    assert resumo["minutos_por_estado"][1] == pytest.approx(40 / 60)
+    assert resumo["minutos_por_estado"][3] == 0
+
+
+def test_resumo_sem_leituras():
+    resumo = thingspeak.resumir_leituras([])
+    assert (resumo["quantidade"], resumo["estado_final"], resumo["aviso_de_gelo"]) == (0, 4, None)
+
+
+def test_dia_e_datas_no_fuso_de_sao_paulo():
+    noite = thingspeak.interpretar_feed({"created_at": "2026-11-16T02:30:00Z", "field1": "3.0", "field2": "0",
+                                         "field3": "0", "field4": "0", "field5": "240"})
+    madrugada = thingspeak.interpretar_feed({"created_at": "2026-11-16T03:30:00Z", "field1": "3.0", "field2": "0",
+                                             "field3": "0", "field4": "0", "field5": "240"})
+    assert thingspeak.leituras_do_dia([noite, madrugada], date(2026, 11, 15)) == [noite]
+    assert thingspeak.datas_com_leitura([noite, madrugada]) == [date(2026, 11, 16), date(2026, 11, 15)]

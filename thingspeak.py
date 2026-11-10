@@ -141,3 +141,53 @@ def situacao_da_caixa(caixa, leituras, aviso, agora):
         cartao["mensagem"] = (f"Sem leitura recente da caixa (última às {formatos.formatar_hora(ultima['quando'])}). "
                               "Confira a conexão.")
     return cartao
+
+
+def leituras_do_dia(leituras, data):
+    """Separa as leituras de um dia, contando o dia no fuso de São Paulo."""
+    do_dia = []
+    for leitura in leituras:
+        if leitura["quando"].astimezone(config.FUSO_SAO_PAULO).date() == data:
+            do_dia.append(leitura)
+    return do_dia
+
+
+def datas_com_leitura(leituras):
+    """Lista os dias que têm leitura, do mais novo para o mais antigo."""
+    datas = []
+    for leitura in leituras:
+        data = leitura["quando"].astimezone(config.FUSO_SAO_PAULO).date()
+        if data not in datas:
+            datas.append(data)
+    datas.sort(reverse=True)
+    return datas
+
+
+def resumir_leituras(leituras):
+    """Resume as leituras: máxima, mínima, fora do frio, como terminou, aviso de gelo e tempo em cada estado."""
+    resumo = {"quantidade": len(leituras), "invalidas": 0, "max_c": None, "min_c": None,
+              "acumulado_final": None, "estado_final": 4, "aviso_de_gelo": None,
+              "minutos_por_estado": {0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0}}
+    for leitura in leituras:
+        if not leitura["valida"]:
+            resumo["invalidas"] = resumo["invalidas"] + 1
+            continue
+        temperatura = leitura["temperatura"]
+        if resumo["max_c"] is None or temperatura > resumo["max_c"]:
+            resumo["max_c"] = temperatura
+        if resumo["min_c"] is None or temperatura < resumo["min_c"]:
+            resumo["min_c"] = temperatura
+        resumo["acumulado_final"] = leitura["acumulado"]
+    for leitura in leituras:
+        if regras.estado_da_leitura(leitura) == 1:
+            resumo["aviso_de_gelo"] = leitura["quando"]
+            break
+    if len(leituras) > 0:
+        resumo["estado_final"] = regras.estado_da_leitura(leituras[-1])
+    for indice in range(len(leituras) - 1):
+        intervalo = (leituras[indice + 1]["quando"] - leituras[indice]["quando"]).total_seconds() / 60
+        # intervalo maior que 5 minutos é caixa desligada, e não conta para nenhum estado
+        if 0 <= intervalo <= 5:
+            codigo = regras.estado_da_leitura(leituras[indice])
+            resumo["minutos_por_estado"][codigo] = resumo["minutos_por_estado"][codigo] + intervalo
+    return resumo

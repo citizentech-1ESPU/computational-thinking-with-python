@@ -1,5 +1,6 @@
 """Peças repetidas das telas do painel, para todas terem a mesma cara."""
 import customtkinter
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from config import CORES, FONTE_TEXTO, FONTE_TITULO
 
@@ -89,3 +90,22 @@ def mostrar_mensagem(rotulo_da_mensagem, texto, tipo):
     if texto == "":
         fundo = "transparent"
     rotulo_da_mensagem.configure(text=texto, text_color=cor_do_texto, fg_color=fundo)
+
+
+def numero(pai, titulo, valor):
+    """Cria um cartão pequeno com um título e um valor em destaque."""
+    pequeno = cartao(pai)
+    customtkinter.CTkLabel(pequeno, text=titulo, font=fonte(13), text_color=CORES["apagado"],
+                           anchor="w").pack(fill="x", padx=14, pady=(10, 0))
+    customtkinter.CTkLabel(pequeno, text=valor, font=fonte(24, negrito=True), text_color=CORES["texto"],
+                           anchor="w").pack(fill="x", padx=14, pady=(0, 10))
+    return pequeno
+
+
+def grafico(pai, figura):
+    """Coloca um gráfico do matplotlib dentro da tela."""
+    tela_do_grafico = FigureCanvasTkAgg(figura, master=pai)
+    tela_do_grafico.draw()
+    widget = tela_do_grafico.get_tk_widget()
+    widget.pack(fill="both", expand=True, padx=8, pady=8)
+    return widget
