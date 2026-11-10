@@ -3,7 +3,9 @@ from matplotlib.dates import DateFormatter
 from matplotlib.figure import Figure
 
 import config
+import formatos
 import regras
+import relatorios
 from config import CORES
 
 
@@ -31,5 +33,33 @@ def grafico_temperatura(leituras):
     eixo.scatter(horarios, temperaturas, c=cores, s=24, zorder=3)
     eixo.set_ylabel("°C")
     eixo.xaxis.set_major_formatter(DateFormatter("%Hh%M", tz=config.FUSO_SAO_PAULO))
+    figura.tight_layout()
+    return figura
+
+
+def grafico_da_semana(resumo_semana):
+    """Desenha barras empilhadas com o destino da mercadoria em cada feira da semana."""
+    figura = Figure(figsize=(7.5, 3.2))
+    eixo = figura.add_subplot()
+    eixo.set_title("Mercadoria da semana")
+    rotulos = []
+    partes = {"vendido_kg": [], "xepa_kg": [], "doado_kg": [], "descartado_kg": []}
+    for feira in resumo_semana["feiras"]:
+        data = relatorios.data_da_feira(feira)
+        rotulos.append(f"{formatos.dia_da_semana(data)[:3]} {data.day:02d}/{data.month:02d}")
+        resumo = relatorios.resumo_da_feira(feira)
+        for chave in partes:
+            partes[chave].append(resumo[chave])
+    series = (("vendido_kg", "Vendido", CORES["ok"]), ("xepa_kg", "Xepa", CORES["aviso_forte"]),
+              ("doado_kg", "Doado", CORES["gelo"]), ("descartado_kg", "Descartado", CORES["perigo"]))
+    base = []
+    for rotulo in rotulos:
+        base.append(0)
+    for chave, nome, cor in series:
+        eixo.bar(rotulos, partes[chave], bottom=base, label=nome, color=cor)
+        for indice in range(len(base)):
+            base[indice] = base[indice] + partes[chave][indice]
+    eixo.set_ylabel("kg")
+    eixo.legend()
     figura.tight_layout()
     return figura
