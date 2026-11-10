@@ -1,5 +1,8 @@
 """Gráficos do painel (matplotlib): a temperatura da caixa e a mercadoria da semana."""
-from matplotlib.dates import DateFormatter
+import math
+from datetime import datetime, time, timedelta
+
+from matplotlib.dates import DateFormatter, HourLocator
 from matplotlib.figure import Figure
 
 import config
@@ -7,6 +10,35 @@ import formatos
 import regras
 import relatorios
 from config import CORES
+
+# O gráfico da temperatura mostra o dia das 3h às 22h: da caixa sendo enchida (5h30) até depois da feira (14h).
+PRIMEIRA_HORA = 3
+ULTIMA_HORA = 22
+
+
+def horario_do_grafico(quando):
+    """Devolve o começo e o fim do eixo do gráfico (das 3h às 22h) no dia do momento, no fuso de São Paulo."""
+    dia = quando.astimezone(config.FUSO_SAO_PAULO).date()
+    inicio = datetime.combine(dia, time(PRIMEIRA_HORA), tzinfo=config.FUSO_SAO_PAULO)
+    fim = datetime.combine(dia, time(ULTIMA_HORA), tzinfo=config.FUSO_SAO_PAULO)
+    return inicio, fim
+
+
+def pontos_da_linha(horarios, temperaturas):
+    """Monta os pontos da linha do gráfico, cortando a linha onde a caixa ficou desligada.
+
+    Mais de 5 minutos entre duas leituras é caixa desligada; um valor vazio (nan) entre elas faz o
+    matplotlib parar a linha ali, para o gráfico não inventar a temperatura de quando não houve leitura.
+    """
+    linha_horarios = []
+    linha_temperaturas = []
+    for indice in range(len(horarios)):
+        if indice > 0 and horarios[indice] - horarios[indice - 1] > timedelta(minutes=config.CAIXA_DESLIGADA_MIN):
+            linha_horarios.append(horarios[indice - 1])
+            linha_temperaturas.append(math.nan)
+        linha_horarios.append(horarios[indice])
+        linha_temperaturas.append(temperaturas[indice])
+    return linha_horarios, linha_temperaturas
 
 
 def grafico_temperatura(leituras):
@@ -28,11 +60,18 @@ def grafico_temperatura(leituras):
         eixo.set_xticks([])
         eixo.set_yticks([])
         return figura
-    eixo.plot(horarios, temperaturas, color=CORES["texto"], linewidth=1.5)
+    linha_horarios, linha_temperaturas = pontos_da_linha(horarios, temperaturas)
+    eixo.plot(linha_horarios, linha_temperaturas, color=CORES["texto"], linewidth=1.5)
     eixo.axhline(config.LIMITE_FRIO_C, linestyle="--", color=CORES["perigo"], linewidth=1)
     eixo.scatter(horarios, temperaturas, c=cores, s=24, zorder=3)
     eixo.set_ylabel("°C")
-    eixo.xaxis.set_major_formatter(DateFormatter("%Hh%M", tz=config.FUSO_SAO_PAULO))
+    # vale o dia da última leitura (em "Últimas leituras", as de dias anteriores ficam fora)
+    inicio, fim = horario_do_grafico(horarios[-1])
+    eixo.set_xlim(inicio, fim)
+    eixo.xaxis.set_major_locator(HourLocator(byhour=range(PRIMEIRA_HORA, ULTIMA_HORA + 1),
+                                             tz=config.FUSO_SAO_PAULO))
+    eixo.xaxis.set_major_formatter(DateFormatter("%Hh", tz=config.FUSO_SAO_PAULO))
+    eixo.tick_params(axis="x", labelsize=8)
     figura.tight_layout()
     return figura
 

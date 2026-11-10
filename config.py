@@ -14,6 +14,7 @@ AVISO_GELO_MIN = 15          # antecedência do aviso de completar o gelo
 TEMP_MIN_VALIDA_C = -30.0    # fora desta faixa, a leitura é inválida
 TEMP_MAX_VALIDA_C = 60.0
 LEITURA_ANTIGA_MIN = 2       # mais de 2 min sem leitura nova: avisar
+CAIXA_DESLIGADA_MIN = 5      # mais de 5 min entre duas leituras: a caixa estava desligada
 FIM_DA_FEIRA = "14:00"
 DESCONTO_XEPA = 0.25         # preço sugerido da xepa: 25% menos
 FUSO_SAO_PAULO = timezone(timedelta(hours=-3))   # sem horário de verão desde 2019

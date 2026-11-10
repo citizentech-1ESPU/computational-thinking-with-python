@@ -188,7 +188,7 @@ def resumir_leituras(leituras):
     for indice in range(len(leituras) - 1):
         intervalo = (leituras[indice + 1]["quando"] - leituras[indice]["quando"]).total_seconds() / 60
         # intervalo maior que 5 minutos é caixa desligada, e não conta para nenhum estado
-        if 0 <= intervalo <= 5:
+        if 0 <= intervalo <= config.CAIXA_DESLIGADA_MIN:
             codigo = regras.estado_da_leitura(leituras[indice])
             resumo["minutos_por_estado"][codigo] = resumo["minutos_por_estado"][codigo] + intervalo
     return resumo
