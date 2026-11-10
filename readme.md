@@ -41,7 +41,7 @@ python main.py
 
 No macOS, se o comando for `python3`, use `python3 -m pip ...` e `python3 main.py`. Se faltar alguma biblioteca, o próprio `main.py` avisa qual é e mostra o comando para instalar.
 
-Testes automáticos (86 testes):
+Testes automáticos (88 testes):
 
 ```bash
 python -m pip install pytest
