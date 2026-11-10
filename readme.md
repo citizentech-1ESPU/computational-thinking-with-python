@@ -53,7 +53,7 @@ python -m pytest
 ## Primeiro uso
 
 - Na primeira vez, o programa cria a pasta `dados/` ao lado do `main.py`, com uma banca de exemplo e 8 feiras simuladas, para todas as telas já terem o que mostrar.
-- Para ver a caixa do Wokwi ao vivo, abra **Caixas e produtos**, escolha a caixa Tilápia e escreva o número do canal do ThingSpeak no campo "Canal do ThingSpeak".
+- A caixa Tilápia já vem ligada ao canal público 3571880 do ThingSpeak, que recebe as leituras do circuito da caixa no Wokwi (https://wokwi.com/projects/480215731510086657). As leituras só chegam enquanto a simulação está rodando: abra o link e aperte o play. O número do canal pode ser trocado em **Caixas e produtos**.
 - Os PDFs ficam na pasta `relatorios/`, também ao lado do `main.py`.
 - **Restaurar dados de exemplo**, em Caixas e produtos, volta tudo para o começo.
 - Sem internet, o painel continua funcionando: mostra as últimas leituras salvas e pede a temperatura do ar para calcular o gelo.

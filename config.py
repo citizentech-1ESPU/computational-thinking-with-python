@@ -37,7 +37,7 @@ FEIRAS_PARA_DEFEITO = 4
 VEZES_PARA_DEFEITO = 3
 
 # Internet
-CANAL_THINGSPEAK_CAIXA_1 = ""    # número do canal que Pedro T criar (design 6.4)
+CANAL_THINGSPEAK_CAIXA_1 = "3571880"    # canal público "Xepa Certa · Caixa 1", do circuito no Wokwi (design 6.4)
 URL_THINGSPEAK = "https://api.thingspeak.com/channels/{canal}/feeds.json"
 LEITURAS_POR_BUSCA = 2000
 URL_OPEN_METEO = "https://api.open-meteo.com/v1/forecast"
