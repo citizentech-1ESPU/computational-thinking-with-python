@@ -3,6 +3,7 @@ from datetime import date
 
 import dados
 import tela_cadastro
+import tela_fechamento
 import tela_historico
 import tela_inicio
 from apoio import FEEDS_DE_UM_DIA, abrir_area, textos_da_tela
@@ -77,5 +78,24 @@ def test_historico_sem_caixa_com_sensor(tmp_path):
         tela_historico.montar(area, estado)
         raiz.update()
         assert "Nenhuma caixa tem sensor ligado. Coloque o número do canal em Caixas e produtos." in textos_da_tela(area)
+    finally:
+        raiz.destroy()
+
+
+def test_fechar_a_feira_pela_tela(tmp_path):
+    estado = dados.carregar_tudo(str(tmp_path / "dados"), HOJE)
+    raiz, area = abrir_area()
+    try:
+        tela_fechamento.montar(area, estado)
+        tela_fechamento.salvar()
+        assert tela_fechamento.campos[("produto-1", "erro")].cget("text") == "Trouxe: Preencha este campo."
+        assert tela_fechamento.campos["erro_temperatura"].cget("text") == "Preencha este campo."
+        tela_fechamento.campos["temperatura"].insert(0, "29")
+        for produto in estado["produtos"]:
+            tela_fechamento.campos[(produto["id"], "trouxe")].insert(0, "10")
+            tela_fechamento.campos[(produto["id"], "vendido")].insert(0, "9")
+        tela_fechamento.salvar()
+        assert len(estado["feiras"]) == 9
+        assert estado["feiras"][-1]["produtos"][0]["vendido_kg"] == 9.0
     finally:
         raiz.destroy()

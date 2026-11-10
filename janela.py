@@ -4,6 +4,7 @@ import customtkinter
 import config
 import dados
 import tela_cadastro
+import tela_fechamento
 import tela_historico
 import tela_inicio
 import visual
@@ -77,7 +78,7 @@ def mostrar_tela(opcao):
         case "Histórico da caixa":
             tela_historico.montar(contexto["area"], estado)
         case "Fechar a feira":
-            tela_em_construcao(opcao)
+            tela_fechamento.montar(contexto["area"], estado)
         case "Relatórios":
             tela_em_construcao(opcao)
         case "Gelo da próxima feira":
