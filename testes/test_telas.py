@@ -1,15 +1,19 @@
 import os
 from datetime import date
 
+import pytest
+
 import dados
 import internet
+import janela
 import tela_cadastro
 import tela_fechamento
 import tela_gelo
 import tela_historico
 import tela_inicio
 import tela_relatorios
-from apoio import FEEDS_DE_UM_DIA, abrir_area, textos_da_tela
+from apoio import (FEEDS_DE_UM_DIA, abrir_area, janela_fora_da_tela, problemas_nos_cartoes,
+                   textos_da_tela)
 
 HOJE = date(2026, 11, 9)
 
@@ -170,5 +174,37 @@ def test_dados_do_sensor_so_valem_para_o_dia_puxado(tmp_path, monkeypatch):
                 feira = candidata
         assert feira["data"] == "2026-11-06"
         assert (feira["caixas"][0]["fonte"], feira["caixas"][0]["max_c"]) == ("manual", None)
+    finally:
+        raiz.destroy()
+
+
+# Leituras antigas (de 10/11), para o cartão mostrar também o aviso de leitura antiga.
+FEED_GELO_ANTIGO = {"created_at": "2026-11-10T18:08:05Z", "field1": "5.4", "field2": "1", "field3": "1",
+                    "field4": "2.4", "field5": "239"}
+FEED_SEM_LEITURA_ANTIGO = {"created_at": "2026-11-10T18:14:18Z", "field1": "8.0", "field2": "288", "field3": "4",
+                           "field4": "0.0", "field5": "0"}
+
+
+@pytest.mark.parametrize("largura", [1000, 1180])
+def test_cartoes_cabem_sem_cortar_texto_nem_cobrir_a_borda(tmp_path, monkeypatch, largura):
+    feeds = []
+    def baixar_falso(url, parametros):
+        if "thingspeak" in url:
+            return {"channel": {}, "feeds": feeds}, None
+        return None, "Sem conexão com o servidor. Tente de novo."
+    monkeypatch.setattr(internet, "baixar_json", baixar_falso)
+    raiz = janela_fora_da_tela(str(tmp_path / "dados"), largura)
+    try:
+        for feed in (FEED_GELO_ANTIGO, FEED_SEM_LEITURA_ANTIGO):
+            feeds.clear()
+            feeds.append(feed)
+            janela.mostrar_tela("Início")
+            raiz.update()
+            assert problemas_nos_cartoes(janela.contexto["area"]) == []
+        janela.mostrar_tela("Gelo da próxima feira")
+        tela_gelo.campos["temperatura"].insert(0, "32")
+        tela_gelo.calcular()
+        raiz.update()
+        assert problemas_nos_cartoes(janela.contexto["area"]) == []
     finally:
         raiz.destroy()

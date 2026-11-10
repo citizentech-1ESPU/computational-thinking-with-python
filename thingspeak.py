@@ -132,10 +132,11 @@ def situacao_da_caixa(caixa, leituras, aviso, agora):
             cartao["mensagem"] = "Ainda não chegou nenhuma leitura desta caixa."
         return cartao
     ultima = leituras[-1]
-    if ultima["valida"]:
+    # Sem leitura (estado 4), a caixa repete a última temperatura boa; o cartão mostra "--", como o site.
+    if ultima["valida"] and codigo != 4:
         cartao["temperatura"] = formatos.formatar_temperatura(ultima["temperatura"])
     if ultima["acumulado"] is not None and ultima["restantes"] is not None:
-        cartao["detalhe"] = (f"Fora do frio: {formatos.formatar_duracao(ultima['acumulado'])} · "
+        cartao["detalhe"] = (f"Fora do frio: {formatos.formatar_duracao(ultima['acumulado'])}\n"
                              f"Restam {formatos.formatar_duracao(ultima['restantes'])}")
     if leitura_antiga(ultima["quando"], agora):
         cartao["mensagem"] = (f"Sem leitura recente da caixa (última às {formatos.formatar_hora(ultima['quando'])}). "

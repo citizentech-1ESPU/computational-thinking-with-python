@@ -43,7 +43,7 @@ python main.py
 
 No macOS, se o comando for `python3`, use `python3 -m pip ...` e `python3 main.py`. Se faltar alguma biblioteca, o próprio `main.py` avisa qual é e mostra o comando para instalar.
 
-Testes automáticos (88 testes):
+Testes automáticos (91 testes):
 
 ```bash
 python -m pip install pytest
@@ -69,7 +69,7 @@ python -m pytest
 | match/case | `regras.py`: `info_do_estado`; `janela.py`: `mostrar_tela`; `visual.py`: `botao` e `mostrar_mensagem`; `fechamento.py`: `validar_linha_produto`; `tela_cadastro.py`: `desenhar`; `tela_relatorios.py`: `trocar_relatorio` |
 | while | `regras.py`: `proxima_feira`; `dados.py`: `datas_de_exemplo`; `cadastro.py`: `novo_id`; `gelo.py`: `gelo_necessario` |
 | for | `thingspeak.py`: `resumir_leituras`; `relatorios.py`: `resumo_da_feira`; `gelo.py`: `caixas_com_defeito`; e todas as telas |
-| Funções com parâmetros e retorno | todos os módulos: 188 funções, cada uma com docstring; as regras têm testes automáticos |
+| Funções com parâmetros e retorno | todos os módulos: 190 funções, cada uma com docstring; as regras têm testes automáticos |
 | Listas | as caixas, os produtos e as feiras são listas de dicionários |
 | Tuplas | `regras.info_do_estado` devolve uma tupla; `config.DIAS_DE_FEIRA` e `config.CATEGORIAS`; as funções que podem falhar devolvem `(valor, erro)` |
 | Dicionários | cada caixa, produto, feira e leitura; `config.CORES`; os campos da tela de fechamento ficam num dicionário com tuplas como chave, como `("produto-1", "trouxe")` |

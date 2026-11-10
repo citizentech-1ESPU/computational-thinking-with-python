@@ -11,6 +11,9 @@ import visual
 campos = {}
 contexto = {"area": None, "estado": None, "resultado": None}
 
+# Largura (px) em que os textos do cartão quebram a linha: cabe no cartão até com a janela no tamanho mínimo.
+LARGURA_DO_TEXTO = 300
+
 
 def montar(area, estado):
     """Desenha a tela do gelo e já calcula quando a previsão do tempo chega."""
@@ -76,14 +79,14 @@ def cartao_do_gelo(grade, item, indice, tem_defeito):
     cartao = visual.cartao(grade)
     cartao.grid(row=indice // 2, column=indice % 2, padx=(0, 12), pady=(0, 12), sticky="nsew")
     grade.grid_columnconfigure(indice % 2, weight=1, uniform="gelo")
-    visual.rotulo(cartao, item["nome"], tamanho=18, negrito=True).pack(fill="x", padx=14, pady=(12, 0))
-    visual.rotulo(cartao, formatos.formatar_kg(item["gelo_kg"]), tamanho=28, negrito=True).pack(fill="x", padx=14)
+    miolo = visual.miolo_do_cartao(cartao)
+    visual.rotulo(miolo, item["nome"], tamanho=18, negrito=True).pack(fill="x")
+    visual.rotulo(miolo, formatos.formatar_kg(item["gelo_kg"]), tamanho=28, negrito=True).pack(fill="x")
     textos = [(item["mensagem"], 14, "texto"),
               (f"Cada grau a mais tira uns {item['perda_por_grau']} min do gelo desta caixa.", 13, "apagado")]
     if tem_defeito:
         textos.append(("Esta caixa perde gelo rápido: confira a tampa e a borracha.", 13, "perigo"))
     for texto, tamanho, cor in textos:
-        rotulo = visual.rotulo(cartao, texto, tamanho=tamanho, cor=cor)
-        rotulo.configure(wraplength=380)
-        rotulo.pack(fill="x", padx=14, pady=(2, 0))
-    customtkinter.CTkFrame(cartao, height=10, fg_color="transparent").pack()
+        rotulo = visual.rotulo(miolo, texto, tamanho=tamanho, cor=cor)
+        rotulo.configure(wraplength=LARGURA_DO_TEXTO)
+        rotulo.pack(fill="x", pady=(2, 0))

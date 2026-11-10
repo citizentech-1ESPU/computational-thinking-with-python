@@ -37,6 +37,13 @@ def cartao(pai):
                                   border_width=1, border_color=CORES["linha"])
 
 
+def miolo_do_cartao(cartao_da_tela):
+    """Cria a parte de dentro do cartão, com margem, para o conteúdo nunca ficar em cima da borda."""
+    miolo = customtkinter.CTkFrame(cartao_da_tela, fg_color="transparent")
+    miolo.pack(fill="both", expand=True, padx=14, pady=12)
+    return miolo
+
+
 def rotulo(pai, texto, tamanho=15, cor="texto", negrito=False):
     """Cria um texto alinhado à esquerda, que quebra a linha quando é comprido."""
     return customtkinter.CTkLabel(pai, text=texto, font=fonte(tamanho, negrito), text_color=CORES[cor],
@@ -60,7 +67,7 @@ def botao(pai, texto, comando, tipo="principal"):
 def etiqueta(pai, texto, cor_texto, cor_fundo):
     """Cria a pílula do estado da caixa: o estado vai sempre escrito, além da cor."""
     return customtkinter.CTkLabel(pai, text=texto, text_color=cor_texto, fg_color=cor_fundo, corner_radius=12,
-                                  font=fonte(14, negrito=True), padx=10)
+                                  font=fonte(13, negrito=True), padx=6)
 
 
 def campo(pai, valor="", largura=110):

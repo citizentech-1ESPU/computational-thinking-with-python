@@ -12,6 +12,9 @@ import visual
 
 contexto = {"area": None, "estado": None}
 
+# Largura (px) em que os textos do cartão quebram a linha: cabe no cartão até com a janela no tamanho mínimo.
+LARGURA_DO_TEXTO = 136
+
 
 def montar(area, estado):
     """Desenha a tela Início: saudação, avisos e um cartão por caixa."""
@@ -81,20 +84,22 @@ def cartao_da_caixa(grade, situacao, indice):
     cartao = visual.cartao(grade)
     cartao.grid(row=indice // 4, column=indice % 4, padx=(0, 12), pady=(0, 12), sticky="nsew")
     grade.grid_columnconfigure(indice % 4, weight=1, uniform="caixas")
-    visual.rotulo(cartao, situacao["nome"], tamanho=18, negrito=True).pack(fill="x", padx=14, pady=(12, 4))
-    visual.etiqueta(cartao, situacao["texto"], situacao["cor_texto"], situacao["cor_fundo"]).pack(anchor="w", padx=14)
-    visual.rotulo(cartao, situacao["temperatura"], tamanho=28, negrito=True).pack(fill="x", padx=14, pady=(6, 0))
+    miolo = visual.miolo_do_cartao(cartao)
+    visual.rotulo(miolo, situacao["nome"], tamanho=18, negrito=True).pack(fill="x", pady=(0, 4))
+    visual.etiqueta(miolo, situacao["texto"], situacao["cor_texto"], situacao["cor_fundo"]).pack(anchor="w")
+    visual.rotulo(miolo, situacao["temperatura"], tamanho=28, negrito=True).pack(fill="x", pady=(6, 0))
     if situacao["detalhe"] != "":
-        visual.rotulo(cartao, situacao["detalhe"], tamanho=13, cor="apagado").pack(fill="x", padx=14)
+        detalhe = visual.rotulo(miolo, situacao["detalhe"], tamanho=13, cor="apagado")
+        detalhe.configure(wraplength=LARGURA_DO_TEXTO)
+        detalhe.pack(fill="x")
     if situacao["mensagem"] != "":
         if situacao["tem_sensor"]:
             cor = "aviso"
         else:
             cor = "apagado"
-        mensagem = visual.rotulo(cartao, situacao["mensagem"], tamanho=13, cor=cor)
-        mensagem.configure(wraplength=200)
-        mensagem.pack(fill="x", padx=14, pady=(4, 0))
-    customtkinter.CTkFrame(cartao, height=10, fg_color="transparent").pack()
+        mensagem = visual.rotulo(miolo, situacao["mensagem"], tamanho=13, cor=cor)
+        mensagem.configure(wraplength=LARGURA_DO_TEXTO)
+        mensagem.pack(fill="x", pady=(4, 0))
 
 
 def atualizar():

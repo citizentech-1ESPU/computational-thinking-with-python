@@ -92,7 +92,7 @@ def test_situacao_para_o_cartao():
     agora_ao_vivo = datetime(2026, 11, 15, 15, 11, tzinfo=timezone.utc)
     cartao = thingspeak.situacao_da_caixa(CAIXA_COM_SENSOR, [leitura], None, agora_ao_vivo)
     assert (cartao["texto"], cartao["temperatura"]) == ("Hora da xepa", "7,8 °C")
-    assert cartao["detalhe"] == "Fora do frio: 2h20 · Restam 1h40"
+    assert cartao["detalhe"] == "Fora do frio: 2h20\nRestam 1h40"
     assert cartao["mensagem"] == ""
     cartao = thingspeak.situacao_da_caixa(CAIXA_COM_SENSOR, [leitura], None, AGORA.replace(hour=13))
     assert cartao["mensagem"] == "Sem leitura recente da caixa (última às 12h10). Confira a conexão."
@@ -100,6 +100,17 @@ def test_situacao_para_o_cartao():
     assert (cartao["texto"], cartao["mensagem"]) == ("Sem leitura", "Ainda não chegou nenhuma leitura desta caixa.")
     cartao = thingspeak.situacao_da_caixa(CAIXA_SEM_SENSOR, [], "Sem sensor ligado.", AGORA)
     assert (cartao["tem_sensor"], cartao["texto"], cartao["temperatura"]) == (False, "Sem sensor", "--")
+
+
+def test_sem_leitura_nao_mostra_a_ultima_temperatura():
+    # A caixa do Wokwi manda a última temperatura boa junto com o estado 4 (sensor com defeito).
+    feed = dict(FEED)
+    feed["field1"], feed["field2"], feed["field3"], feed["field5"] = "8.0", "288", "4", "0"
+    leitura = thingspeak.interpretar_feed(feed)
+    agora_ao_vivo = datetime(2026, 11, 15, 15, 11, tzinfo=timezone.utc)
+    cartao = thingspeak.situacao_da_caixa(CAIXA_COM_SENSOR, [leitura], None, agora_ao_vivo)
+    assert (cartao["texto"], cartao["temperatura"]) == ("Sem leitura", "--")
+    assert cartao["detalhe"] == "Fora do frio: 4h48\nRestam 0 min"
 
 
 def test_resume_as_leituras():
