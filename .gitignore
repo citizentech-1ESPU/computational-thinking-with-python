@@ -1,0 +1,13 @@
+# Ambiente e cache do Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Criados pelo painel quando roda (dados de exemplo e PDFs)
+dados/
+relatorios/
+
+# Sistema e ZIP de entrega
+.DS_Store
+*.zip

@@ -1,0 +1,3 @@
+# Fora do ZIP de entrega (git archive), que leva só os .py, o prompt.md e o readme.md
+.gitignore export-ignore
+.gitattributes export-ignore
