@@ -7,6 +7,7 @@ import tela_cadastro
 import tela_fechamento
 import tela_historico
 import tela_inicio
+import tela_relatorios
 import visual
 from config import CORES
 
@@ -80,7 +81,7 @@ def mostrar_tela(opcao):
         case "Fechar a feira":
             tela_fechamento.montar(contexto["area"], estado)
         case "Relatórios":
-            tela_em_construcao(opcao)
+            tela_relatorios.montar(contexto["area"], estado)
         case "Gelo da próxima feira":
             tela_em_construcao(opcao)
         case "Caixas e produtos":

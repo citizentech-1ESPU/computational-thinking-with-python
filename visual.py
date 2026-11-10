@@ -2,6 +2,7 @@
 import customtkinter
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+import formatos
 from config import CORES, FONTE_TEXTO, FONTE_TITULO
 
 
@@ -100,6 +101,35 @@ def numero(pai, titulo, valor):
     customtkinter.CTkLabel(pequeno, text=valor, font=fonte(24, negrito=True), text_color=CORES["texto"],
                            anchor="w").pack(fill="x", padx=14, pady=(0, 10))
     return pequeno
+
+
+def numeros_da_feira(pai, resumo):
+    """Cria a linha com os quatro números de uma feira: aproveitado, xepa, doado e descarte."""
+    linha = customtkinter.CTkFrame(pai, fg_color="transparent")
+    if resumo["aproveitamento"] is None:
+        aproveitado = "--"
+    else:
+        aproveitado = f"{int(resumo['aproveitamento'])}%"
+    numero(linha, "Aproveitado", aproveitado).pack(side="left", padx=(0, 10))
+    numero(linha, "Xepa rendeu", formatos.formatar_reais(resumo["receita_xepa"])).pack(side="left", padx=(0, 10))
+    numero(linha, "Doado", formatos.formatar_kg(resumo["doado_kg"])).pack(side="left", padx=(0, 10))
+    numero(linha, "Descarte custou", formatos.formatar_reais(resumo["perda"])).pack(side="left")
+    return linha
+
+
+def tabela(pai, cabecalho, linhas):
+    """Cria uma tabela com o cabeçalho em negrito e uma linha por item."""
+    quadro = cartao(pai)
+    for coluna in range(len(cabecalho)):
+        customtkinter.CTkLabel(quadro, text=cabecalho[coluna], font=fonte(13, negrito=True),
+                               text_color=CORES["apagado"], anchor="w").grid(row=0, column=coluna, sticky="w",
+                                                                             padx=12, pady=(8, 2))
+    for posicao in range(len(linhas)):
+        linha = linhas[posicao]
+        for coluna in range(len(linha)):
+            customtkinter.CTkLabel(quadro, text=linha[coluna], font=fonte(14), text_color=CORES["texto"],
+                                   anchor="w").grid(row=posicao + 1, column=coluna, sticky="w", padx=12, pady=1)
+    return quadro
 
 
 def grafico(pai, figura):

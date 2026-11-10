@@ -6,6 +6,7 @@ import tela_cadastro
 import tela_fechamento
 import tela_historico
 import tela_inicio
+import tela_relatorios
 from apoio import FEEDS_DE_UM_DIA, abrir_area, textos_da_tela
 
 HOJE = date(2026, 11, 9)
@@ -97,5 +98,21 @@ def test_fechar_a_feira_pela_tela(tmp_path):
         tela_fechamento.salvar()
         assert len(estado["feiras"]) == 9
         assert estado["feiras"][-1]["produtos"][0]["vendido_kg"] == 9.0
+    finally:
+        raiz.destroy()
+
+
+def test_relatorios_da_feira_da_semana_e_pdf(tmp_path):
+    estado = dados.carregar_tudo(str(tmp_path / "dados"), HOJE)
+    raiz, area = abrir_area()
+    try:
+        tela_relatorios.montar(area, estado)
+        raiz.update()
+        assert "94% da mercadoria foi aproveitada e 2,6 kg foram para o descarte." in textos_da_tela(area)
+        tela_relatorios.salvar_pdf()
+        assert os.path.exists(tmp_path / "relatorios" / "relatorio-2026-11-08.pdf")
+        tela_relatorios.trocar_relatorio("Da semana")
+        raiz.update()
+        assert "Você descartou 1,3 kg a mais que na semana anterior. Confira o gelo e as caixas." in textos_da_tela(area)
     finally:
         raiz.destroy()

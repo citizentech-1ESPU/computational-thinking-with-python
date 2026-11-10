@@ -5,6 +5,7 @@ import config
 import dados
 import formatos
 import regras
+import relatorios
 import thingspeak
 import visual
 
@@ -25,7 +26,8 @@ def montar(area, estado):
         visual.mostrar_mensagem(rotulo, aviso, "aviso")
         rotulo.pack(fill="x", padx=24, pady=(0, 8))
     desenhar_caixas(area, estado, agora)
-    visual.botao(area, "Atualizar", atualizar, tipo="leve").pack(anchor="w", padx=24, pady=(4, 12))
+    visual.botao(area, "Atualizar", atualizar, tipo="leve").pack(anchor="w", padx=24, pady=(0, 8))
+    desenhar_ultima_feira(area, estado)
 
 
 def desenhar_caixas(area, estado, agora):
@@ -51,6 +53,22 @@ def desenhar_caixas(area, estado, agora):
             rotulo = visual.mensagem(area)
             visual.mostrar_mensagem(rotulo, erro, "erro")
             rotulo.pack(fill="x", padx=24, pady=(0, 8))
+
+
+def desenhar_ultima_feira(area, estado):
+    """Mostra os quatro números da última feira fechada."""
+    if len(estado["feiras"]) == 0:
+        visual.rotulo(area, "Ainda não tem feira fechada. Use Fechar a feira.", cor="apagado").pack(fill="x", padx=24)
+        return
+    ultima = estado["feiras"][-1]
+    data = relatorios.data_da_feira(ultima)
+    if data is None:
+        titulo = "Última feira"
+    else:
+        titulo = f"Última feira ({formatos.formatar_dia(data)})"
+    visual.rotulo(area, titulo, tamanho=18, negrito=True).pack(fill="x", padx=24, pady=(4, 6))
+    visual.numeros_da_feira(area, relatorios.resumo_da_feira(ultima)).pack(fill="x", padx=24)
+    visual.rotulo(area, "Veja tudo em Relatórios.", tamanho=14, cor="apagado").pack(fill="x", padx=24, pady=(6, 12))
 
 
 def cartao_da_caixa(grade, situacao, indice):
