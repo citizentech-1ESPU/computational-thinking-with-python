@@ -19,7 +19,7 @@ CAMPOS_DO_PRODUTO = ("trouxe", "vendido", "xepa", "preco_xepa", "doado", "descar
 ORDEM_DOS_ERROS_DO_PRODUTO = ("trouxe", "vendido", "xepa", "preco_xepa", "doado", "descartado", "soma")
 
 campos = {}
-contexto = {"area": None, "estado": None, "do_sensor": {}}
+contexto = {"area": None, "estado": None, "do_sensor": {}, "data_do_sensor": None}
 
 
 def montar(area, estado):
@@ -27,6 +27,7 @@ def montar(area, estado):
     contexto["area"] = area
     contexto["estado"] = estado
     contexto["do_sensor"] = {}
+    contexto["data_do_sensor"] = None
     campos.clear()
     visual.titulo_da_tela(area, "Fechar a feira",
                           "Anote como foi o dia. Os números vão para os relatórios e para o cálculo do gelo.")
@@ -168,6 +169,8 @@ def puxar_da_caixa():
         return
     estado = contexto["estado"]
     agora = formatos.agora_em_sao_paulo()
+    contexto["do_sensor"] = {}
+    contexto["data_do_sensor"] = data
     alguma_com_sensor = False
     for caixa in estado["caixas"]:
         if caixa["canal"] == "":
@@ -177,8 +180,6 @@ def puxar_da_caixa():
         leituras, aviso = thingspeak.leituras_da_caixa(caixa, estado["leituras"], agora)
         sensor = fechamento.dados_do_sensor(leituras, data)
         if sensor is None:
-            if chave in contexto["do_sensor"]:
-                del contexto["do_sensor"][chave]
             if aviso is None:
                 aviso = "A caixa não mandou leituras nesse dia."
             escrever(campos[(chave, "sensor")], aviso, "aviso")
@@ -229,7 +230,11 @@ def salvar():
         chave = caixa["id"]
         textos = {"gelo": campos[(chave, "gelo")].get(), "acabou": campos[(chave, "acabou")].get(),
                   "estado": campos[(chave, "estado")].get()}
-        linha, erros = fechamento.validar_linha_caixa(caixa, textos, contexto["do_sensor"].get(chave))
+        do_sensor = None
+        if contexto["data_do_sensor"] == data:
+            # o que a caixa mandou só vale para o dia que foi puxado
+            do_sensor = contexto["do_sensor"].get(chave)
+        linha, erros = fechamento.validar_linha_caixa(caixa, textos, do_sensor)
         escrever(campos[(chave, "erro")], primeiro_erro(erros, ("gelo", "acabou", "estado")))
         if len(erros) > 0:
             tem_erro = True

@@ -2,6 +2,7 @@ import os
 from datetime import date
 
 import dados
+import internet
 import tela_cadastro
 import tela_fechamento
 import tela_gelo
@@ -132,5 +133,42 @@ def test_gelo_sem_internet_pede_a_temperatura(tmp_path, sem_internet):
         textos = textos_da_tela(area)
         assert "Total para a feira: 31,5 kg de gelo." in textos
         assert "Esta caixa perde gelo rápido: confira a tampa e a borracha." in textos
+    finally:
+        raiz.destroy()
+
+
+def test_dados_do_sensor_so_valem_para_o_dia_puxado(tmp_path, monkeypatch):
+    feeds = []
+    for feed in FEEDS_DE_UM_DIA:
+        copia = dict(feed)
+        copia["created_at"] = copia["created_at"].replace("2026-11-15", "2026-11-08")
+        feeds.append(copia)
+    def baixar_falso(url, parametros):
+        return {"channel": {}, "feeds": feeds}, None
+    monkeypatch.setattr(internet, "baixar_json", baixar_falso)
+    estado = dados.carregar_tudo(str(tmp_path / "dados"), HOJE)
+    estado["caixas"][0]["canal"] = "123"
+    raiz, area = abrir_area()
+    try:
+        tela_fechamento.montar(area, estado)
+        tela_fechamento.campos["data"].delete(0, "end")
+        tela_fechamento.campos["data"].insert(0, "08/11/2026")
+        tela_fechamento.puxar_da_caixa()
+        assert tela_fechamento.campos[("caixa-1", "acabou")].get() == "12h00"
+        tela_fechamento.campos["data"].delete(0, "end")
+        tela_fechamento.campos["data"].insert(0, "06/11/2026")
+        tela_fechamento.campos[("caixa-1", "acabou")].delete(0, "end")
+        tela_fechamento.campos[("caixa-1", "estado")].set("Venda normal")
+        tela_fechamento.campos["temperatura"].insert(0, "29")
+        for produto in estado["produtos"]:
+            tela_fechamento.campos[(produto["id"], "trouxe")].insert(0, "10")
+            tela_fechamento.campos[(produto["id"], "vendido")].insert(0, "9")
+        tela_fechamento.salvar()
+        feira = estado["feiras"][-1]
+        for candidata in estado["feiras"]:
+            if candidata["data"] == "2026-11-06":
+                feira = candidata
+        assert feira["data"] == "2026-11-06"
+        assert (feira["caixas"][0]["fonte"], feira["caixas"][0]["max_c"]) == ("manual", None)
     finally:
         raiz.destroy()
