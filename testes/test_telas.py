@@ -3,6 +3,7 @@ from datetime import date
 
 import dados
 import tela_cadastro
+import tela_inicio
 from apoio import abrir_area, textos_da_tela
 
 HOJE = date(2026, 11, 9)
@@ -33,5 +34,20 @@ def test_cadastrar_caixa_pela_tela(tmp_path):
         assert estado["caixas"][-1]["id"] == "caixa-5"
         salvas, aviso = dados.ler_json(os.path.join(pasta, "caixas.json"), [])
         assert salvas[-1]["nome"] == "Tainha" and salvas[-1]["gelo_padrao_kg"] == 5.0
+    finally:
+        raiz.destroy()
+
+
+def test_inicio_sem_internet(tmp_path, sem_internet):
+    estado = dados.carregar_tudo(str(tmp_path / "dados"), HOJE)
+    estado["caixas"][0]["canal"] = "123"
+    raiz, area = abrir_area()
+    try:
+        tela_inicio.montar(area, estado)
+        raiz.update()
+        textos = " ".join(textos_da_tela(area))
+        assert "Início" in textos
+        assert "Sem conexão com o servidor. Tente de novo." in textos
+        assert "Sem sensor" in textos
     finally:
         raiz.destroy()

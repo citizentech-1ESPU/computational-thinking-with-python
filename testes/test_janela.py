@@ -12,7 +12,7 @@ def test_menu_tem_as_seis_opcoes():
     assert tuple(textos) == TEXTOS_DO_MENU
 
 
-def test_cada_opcao_abre_a_sua_tela(tmp_path):
+def test_cada_opcao_abre_a_sua_tela(tmp_path, sem_internet):
     raiz = janela.criar(str(tmp_path / "dados"))
     raiz.withdraw()
     try:

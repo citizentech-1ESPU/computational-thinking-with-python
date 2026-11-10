@@ -55,6 +55,12 @@ def botao(pai, texto, comando, tipo="principal"):
                                    height=38, font=fonte(15, negrito=True))
 
 
+def etiqueta(pai, texto, cor_texto, cor_fundo):
+    """Cria a pílula do estado da caixa: o estado vai sempre escrito, além da cor."""
+    return customtkinter.CTkLabel(pai, text=texto, text_color=cor_texto, fg_color=cor_fundo, corner_radius=12,
+                                  font=fonte(14, negrito=True), padx=10)
+
+
 def campo(pai, valor="", largura=110):
     """Cria uma caixa de texto com o valor inicial já escrito."""
     entrada = customtkinter.CTkEntry(pai, width=largura, height=34, font=fonte(15))

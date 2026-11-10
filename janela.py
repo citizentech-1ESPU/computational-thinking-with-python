@@ -4,6 +4,7 @@ import customtkinter
 import config
 import dados
 import tela_cadastro
+import tela_inicio
 import visual
 from config import CORES
 
@@ -71,7 +72,7 @@ def mostrar_tela(opcao):
     destacar_botao(opcao)
     match opcao:
         case "Início":
-            tela_em_construcao(opcao)
+            tela_inicio.montar(contexto["area"], estado)
         case "Histórico da caixa":
             tela_em_construcao(opcao)
         case "Fechar a feira":
