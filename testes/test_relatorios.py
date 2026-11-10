@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 import pytest
@@ -95,3 +96,14 @@ def test_pdf_onde_nao_pode_salvar(tmp_path):
     bloqueio.write_text("x", encoding="utf-8")
     assert relatorios.gerar_pdf_da_feira(ULTIMA, str(bloqueio / "relatorio.pdf")) == (
         "Não deu para salvar o PDF. Se ele estiver aberto em outro programa, feche e tente de novo.")
+
+
+def test_pdf_com_letra_que_a_fonte_nao_tem(tmp_path):
+    produtos = list(ULTIMA["produtos"])
+    especial = dict(produtos[0])
+    especial["nome"] = "Tilápia “especial” 🐟"
+    produtos[0] = especial
+    feira = dict(ULTIMA, produtos=produtos)
+    caminho = str(tmp_path / "relatorio.pdf")
+    assert relatorios.gerar_pdf_da_feira(feira, caminho) is None
+    assert os.path.exists(caminho)

@@ -231,6 +231,11 @@ def caminho_do_pdf(pasta_dados, data_iso):
     return os.path.join(os.path.dirname(pasta_dados), "relatorios", f"relatorio-{data_iso}.pdf")
 
 
+def texto_para_pdf(texto):
+    """Troca por ? as letras que a fonte do PDF não tem, como aspas curvas e emoji."""
+    return str(texto).encode("latin-1", "replace").decode("latin-1")
+
+
 def titulo_no_pdf(pdf, texto):
     """Escreve o título de uma parte do relatório."""
     pdf.ln(4)
@@ -244,16 +249,16 @@ def tabela_no_pdf(pdf, cabecalho, linhas, larguras):
     with pdf.table(line_height=6, text_align="LEFT", col_widths=larguras) as tabela:
         linha_do_pdf = tabela.row()
         for texto in cabecalho:
-            linha_do_pdf.cell(texto)
+            linha_do_pdf.cell(texto_para_pdf(texto))
         for linha in linhas:
             linha_do_pdf = tabela.row()
             for texto in linha:
-                linha_do_pdf.cell(texto)
+                linha_do_pdf.cell(texto_para_pdf(texto))
 
 
 def gerar_pdf_da_feira(feira, caminho):
     """Gera o relatório da feira em PDF, para mostrar à fiscalização. Devolve o erro ou None."""
-    # a fonte Helvetica só tem os caracteres do Latin-1: acentos, ° e · funcionam; emoji não
+    # a fonte Helvetica só tem os caracteres do Latin-1 (acentos, ° e ·); o resto passa por texto_para_pdf
     data = data_da_feira(feira)
     if data is None:
         dia = feira.get("data", "")
@@ -267,7 +272,7 @@ def gerar_pdf_da_feira(feira, caminho):
         pdf.set_font("Helvetica", "B", 16)
         pdf.cell(0, 10, "Xepa Certa · Relatório da feira", new_x="LMARGIN", new_y="NEXT")
         pdf.set_font("Helvetica", "", 11)
-        pdf.cell(0, 7, f"{config.NOME_DA_BANCA} · {dia} · ar a {temperatura} (média das 6h às 14h)",
+        pdf.cell(0, 7, texto_para_pdf(f"{config.NOME_DA_BANCA} · {dia} · ar a {temperatura} (média das 6h às 14h)"),
                  new_x="LMARGIN", new_y="NEXT")
         titulo_no_pdf(pdf, "Caixas térmicas")
         tabela_no_pdf(pdf, CABECALHO_CAIXAS, linhas_das_caixas(feira), (1.2, 0.8, 1, 0.9, 1, 1.4))
@@ -276,7 +281,7 @@ def gerar_pdf_da_feira(feira, caminho):
         titulo_no_pdf(pdf, "Resumo")
         pdf.set_font("Helvetica", "", 11)
         for frase in frases_da_feira(resumo_da_feira(feira)):
-            pdf.multi_cell(0, 6, frase, new_x="LMARGIN", new_y="NEXT")
+            pdf.multi_cell(0, 6, texto_para_pdf(frase), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(3)
         pdf.multi_cell(0, 6, "Regras da caixa: acima de 5 °C o relógio corre; 2 horas fora do frio é hora da xepa "
                              "(vender ou doar no dia); 4 horas é descarte.", new_x="LMARGIN", new_y="NEXT")
