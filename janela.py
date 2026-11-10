@@ -2,6 +2,8 @@
 import customtkinter
 
 import config
+import dados
+import tela_cadastro
 import visual
 from config import CORES
 
@@ -79,13 +81,15 @@ def mostrar_tela(opcao):
         case "Gelo da próxima feira":
             tela_em_construcao(opcao)
         case "Caixas e produtos":
-            tela_em_construcao(opcao)
+            tela_cadastro.montar(contexto["area"], estado)
         case _:
             visual.titulo_da_tela(contexto["area"], "Opção desconhecida", "Escolha uma opção do menu.")
 
 
 def criar(pasta=config.PASTA_DADOS):
-    """Monta a janela com o menu e a tela Início, sem começar a rodar."""
+    """Carrega os dados e monta a janela com o menu e a tela Início, sem começar a rodar."""
+    estado.clear()
+    estado.update(dados.carregar_tudo(pasta))
     customtkinter.set_appearance_mode("light")
     raiz = customtkinter.CTk()
     raiz.title("Xepa Certa · Painel da banca")
