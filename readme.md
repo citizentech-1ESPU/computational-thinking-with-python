@@ -4,6 +4,8 @@ Programa com janela que o feirante usa no computador, antes e depois da feira: a
 
 GS CitizenTech 2026.2 · Engenharia de Software, 1º ano · Computational Thinking with Python · time SafeTech
 
+Repositório: https://github.com/citizentech-1ESPU/computational-thinking-with-python
+
 | Integrante | RM |
 |---|---|
 | Pedro Passos Corsini | RM573493 |
