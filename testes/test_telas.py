@@ -4,6 +4,7 @@ from datetime import date
 import dados
 import tela_cadastro
 import tela_fechamento
+import tela_gelo
 import tela_historico
 import tela_inicio
 import tela_relatorios
@@ -114,5 +115,22 @@ def test_relatorios_da_feira_da_semana_e_pdf(tmp_path):
         tela_relatorios.trocar_relatorio("Da semana")
         raiz.update()
         assert "Você descartou 1,3 kg a mais que na semana anterior. Confira o gelo e as caixas." in textos_da_tela(area)
+    finally:
+        raiz.destroy()
+
+
+def test_gelo_sem_internet_pede_a_temperatura(tmp_path, sem_internet):
+    estado = dados.carregar_tudo(str(tmp_path / "dados"), HOJE)
+    raiz, area = abrir_area()
+    try:
+        tela_gelo.montar(area, estado)
+        raiz.update()
+        assert "Sem conexão com o servidor. Tente de novo. Digite a temperatura esperada." in textos_da_tela(area)
+        tela_gelo.campos["temperatura"].insert(0, "32")
+        tela_gelo.calcular()
+        raiz.update()
+        textos = textos_da_tela(area)
+        assert "Total para a feira: 31,5 kg de gelo." in textos
+        assert "Esta caixa perde gelo rápido: confira a tampa e a borracha." in textos
     finally:
         raiz.destroy()

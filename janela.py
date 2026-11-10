@@ -5,6 +5,7 @@ import config
 import dados
 import tela_cadastro
 import tela_fechamento
+import tela_gelo
 import tela_historico
 import tela_inicio
 import tela_relatorios
@@ -55,11 +56,6 @@ MENU = (
 )
 
 
-def tela_em_construcao(opcao):
-    """Mostra só o título de uma tela que ainda não foi feita."""
-    visual.titulo_da_tela(contexto["area"], opcao, "Em construção.")
-
-
 def destacar_botao(opcao):
     """Pinta o botão da opção escolhida e deixa os outros sem fundo."""
     for texto, botao in contexto["botoes"].items():
@@ -83,7 +79,7 @@ def mostrar_tela(opcao):
         case "Relatórios":
             tela_relatorios.montar(contexto["area"], estado)
         case "Gelo da próxima feira":
-            tela_em_construcao(opcao)
+            tela_gelo.montar(contexto["area"], estado)
         case "Caixas e produtos":
             tela_cadastro.montar(contexto["area"], estado)
         case _:

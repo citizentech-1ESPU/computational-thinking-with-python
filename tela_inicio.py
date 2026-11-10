@@ -4,6 +4,7 @@ import customtkinter
 import config
 import dados
 import formatos
+import gelo
 import regras
 import relatorios
 import thingspeak
@@ -24,6 +25,10 @@ def montar(area, estado):
     for aviso in estado["avisos"]:
         rotulo = visual.mensagem(area)
         visual.mostrar_mensagem(rotulo, aviso, "aviso")
+        rotulo.pack(fill="x", padx=24, pady=(0, 8))
+    for defeito in gelo.caixas_com_defeito(estado["caixas"], estado["feiras"]):
+        rotulo = visual.mensagem(area)
+        visual.mostrar_mensagem(rotulo, defeito["mensagem"], "erro")
         rotulo.pack(fill="x", padx=24, pady=(0, 8))
     desenhar_caixas(area, estado, agora)
     visual.botao(area, "Atualizar", atualizar, tipo="leve").pack(anchor="w", padx=24, pady=(0, 8))
