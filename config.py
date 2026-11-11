@@ -29,7 +29,7 @@ CATEGORIAS = ("peixe", "queijo", "frios", "fruta", "verdura", "outro")
 
 # Gelo (modelo da Matemática: o gelo dura K x kg de gelo / temperatura do ar)
 GELO_PADRAO_KG = 5.0
-CONSTANTE_GELO_PADRAO = 2500.0   # minutos x °C por kg, calibrado pela entrevista
+CONSTANTE_GELO_PADRAO = 1950.0   # minutos x °C por kg, calibrado na Matemática com o ar real de 04/11/2026
 TEMP_AR_MINIMA_DO_MODELO = 10.0  # abaixo disso, a conta usa 10 °C
 MARGEM_DO_GELO_MIN = 30
 PASSO_DO_GELO_KG = 0.5

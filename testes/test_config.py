@@ -16,7 +16,7 @@ def test_regras_iguais_as_da_caixa_e_do_site():
 def test_banca_e_gelo():
     assert config.DIAS_DE_FEIRA == (3, 6)
     assert config.HORA_DE_ENCHER_AS_CAIXAS == "05:30"
-    assert config.CONSTANTE_GELO_PADRAO == 2500.0
+    assert config.CONSTANTE_GELO_PADRAO == 1950.0
 
 
 def test_dados_ficam_ao_lado_do_programa():

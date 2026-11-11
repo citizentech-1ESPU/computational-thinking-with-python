@@ -30,7 +30,7 @@ def test_duracao_do_gelo_numa_feira():
 def test_constante_estimada_pelo_historico():
     assert gelo.estimar_constante(EXEMPLO["feiras"], "caixa-1") == pytest.approx(2446.0, abs=0.1)
     assert gelo.estimar_constante(EXEMPLO["feiras"], "caixa-4") == pytest.approx(1896.9, abs=0.1)
-    assert gelo.estimar_constante([], "caixa-1") == 2500.0
+    assert gelo.estimar_constante([], "caixa-1") == 1950.0
 
 
 def test_recomendacao_para_um_dia_de_32_graus():

@@ -80,7 +80,7 @@ Boas práticas: um módulo por responsabilidade (as regras não sabem que existe
 ## Regras e contas
 
 - **Estados da caixa** (os mesmos da caixa do Wokwi e do site): acima de 5 °C o relógio corre; com 2 horas fora do frio é **Hora da xepa** (vender ou doar no dia, não volta para a geladeira); com 4 horas é **Descarte**. O aviso **Complete o gelo** aparece quando a caixa vai passar de 5 °C em até 15 minutos.
-- **Modelo do gelo** (o mesmo da parte de Matemática): com M kg de gelo e o ar a T °C (média das 6h às 14h), o gelo dura K × M ÷ T minutos. O K de cada caixa sai das feiras anteriores (sem histórico, vale 2.500, calibrado pela entrevista). A derivada, K × M ÷ T², dá quantos minutos de gelo cada grau a mais tira. O painel recomenda gelo para durar das 5h30 às 14h, com meia hora de folga, de meio em meio quilo.
+- **Modelo do gelo** (o mesmo da parte de Matemática): com M kg de gelo e o ar a T °C (média das 6h às 14h), o gelo dura K × M ÷ T minutos. O K de cada caixa sai das feiras anteriores (sem histórico, vale 1.950, calibrado na parte de Matemática com a temperatura real do ar de 04/11/2026 e o relato da entrevista). A derivada, K × M ÷ T², dá quantos minutos de gelo cada grau a mais tira. O painel recomenda gelo para durar das 5h30 às 14h, com meia hora de folga, de meio em meio quilo.
 - **Caixa com defeito:** nas últimas 4 feiras, a caixa cujo K fica abaixo de 80% da média das outras em 3 feiras ou mais ganha o aviso "Confira a tampa e a borracha".
 - **Preço da xepa sugerido:** 25% menos, arredondado para baixo em 10 centavos (igual ao site).
 
