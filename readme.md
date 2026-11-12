@@ -13,6 +13,27 @@ Repositório: https://github.com/citizentech-1ESPU/computational-thinking-with-p
 | Henrique Lira | RM571009 |
 | Pedro Thyago de Araújo Santos | RM570939 |
 
+## Ficha da CitizenTech
+
+| Campo | Conteúdo |
+|---|---|
+| Nome da CitizenTech | Xepa Certa |
+| Cidade e bairro | São Paulo, Zona Norte (feira de domingo da Av. Engenheiro Caetano Álvares) |
+| Cidadão beneficiado | Feirante que vende perecível (peixe, queijo, frios). Também os fregueses do bairro e as ONGs e cozinhas solidárias que recebem doações. |
+| Problema, em uma frase | O feirante não tem como saber se o peixe e o queijo ficaram frios o suficiente: perde mercadoria quando o gelo acaba antes do esperado, e a sobra que ainda está boa não chega a quem precisa a tempo. |
+| Como funciona | Um sensor na caixa térmica mede a temperatura, soma o tempo que o produto passou fora do frio e acende verde, amarelo ou vermelho, mesmo sem internet. No amarelo, o feirante anuncia a xepa no site, e fregueses e ONGs perto da feira reservam e retiram antes de estragar. O vermelho bloqueia venda e doação. |
+| O que cada parte faz | Edge: a caixa que mede e decide sozinha. Front e Web: o site da xepa. Python: o painel da banca (relatórios e planejamento do gelo). Matemática: o modelo de quanto tempo a caixa aguenta. STED: requisitos, jornada e protótipo. Pitch: a história em 3 minutos. |
+| Link do repositório | https://github.com/citizentech-1ESPU/computational-thinking-with-python |
+| Indicador de impacto | Quilos de perecível que deixaram de ir para o lixo por feira (vendidos na xepa mais doados) e reais de perda evitada por feirante. |
+| ODS conectados | ODS 2 (meta 2.1), ODS 3 (metas 3.3 e 3.d), ODS 11 (meta 11.6) e, como apoio, ODS 13 (meta 13.1). Detalhes abaixo. |
+
+## Como a Xepa Certa contribui com os ODS
+
+- **ODS 2, meta 2.1 (acesso de todas as pessoas a alimentos seguros, nutritivos e suficientes):** a sobra que ainda está boa chega com desconto aos fregueses do bairro e de graça às cozinhas solidárias, sempre dentro do tempo seguro.
+- **ODS 3, meta 3.3 (combater doenças transmissíveis, entre elas as transmitidas por alimentos) e meta 3.d (alerta precoce de riscos à saúde):** a caixa avisa antes de o produto entrar na zona de risco e bloqueia venda e doação quando o tempo fora do frio passa do limite.
+- **ODS 11, meta 11.6 (reduzir o impacto ambiental das cidades, com atenção à gestão de resíduos):** menos peixe, queijo, frutas e verduras no lixo da feira.
+- **ODS 13, meta 13.1 (adaptação a riscos do clima), como apoio:** em dia muito quente o gelo derrete mais rápido, e o aviso de completar o gelo ajuda o feirante a se adaptar ao calor.
+
 ## O problema
 
 Peixe e queijo ficam em caixas térmicas com gelo durante a feira. Em dia quente o gelo acaba antes do esperado, e o feirante só percebe quando o produto já esquentou. Na entrevista que a equipe fez numa feira da Zona Norte de São Paulo, o feirante contou que perde de R$ 100 a R$ 200 por semana com mercadoria estragada, que a fiscalização pergunta como ele conserva o peixe e que a xepa e a doação acontecem sem planejamento.
