@@ -1,6 +1,10 @@
 # Uso de IA no painel da banca (Python)
 
-> **Rascunho para revisão:** esta versão descreve o desenvolvimento como pair programming assistido por IA. 
+Olá professor, tudo bem? Gostaria de explicar sobre o meu uso de IA no planejamento e no desenvolvimento da entrega: há poucos prompts, apenas prompts concordando com o planejamento porque realizei uma vasta pesquisa, discussão de ideias e alinhamento de pensamentos em outra sessao (cheguei a ficar com ela aberta durante 4 dias somente planejando e jogando ideias, conhecimentos) para por fim, realizar um unico arquivo (design.md) para que fique mais organizado e que meus colegas de grupo pudessem usufruir da melhor forma.
+
+Obrigado! 
+
+------------------------------------------------
 
 Registro da parceria no desenvolvimento do painel, com as cinco partes pedidas pela FIAP (PDF, pág. 31). Pedro conduziu o trabalho com objetivos, referências, escolhas e pedidos de ajuste. As ferramentas de IA atuaram como parceiras técnicas no planejamento, implementação e revisão. Onde os registros dizem que a IA escreveu código ou testes, essa autoria continua explícita. Revisões pessoais que ainda não foram feitas ficam marcadas como pendentes.
 
